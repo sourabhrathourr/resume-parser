@@ -12,6 +12,19 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  async headers() {
+    return [
+      {
+        source: '/api/:path*',
+        headers: [
+          {
+            key: 'Connection',
+            value: 'keep-alive'
+          }
+        ],
+      }
+    ];
+  }
 };
 
 export default nextConfig;

@@ -4,6 +4,10 @@ import { generateObject } from "ai";
 import { schema } from "@/lib/methods/schema";
 import { ZodError } from "zod";
 
+export const maxDuration = 300; // 5 minutes
+export const dynamic = 'force-dynamic';
+export const runtime = 'edge';
+
 if (!process.env.ANTHROPIC_API_KEY) {
   throw new Error("Missing ANTHROPIC_API_KEY environment variable");
 }

@@ -35,6 +35,7 @@ export function ResumeParser() {
       setResult(data);
     } catch (error) {
       console.error("Error extracting data:", error);
+      alert("Failed to parse resume. Please try again or contact support if the issue persists.");
     } finally {
       setLoading(false);
     }

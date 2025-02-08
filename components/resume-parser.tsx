@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { extractDataFromResume } from "@/app/methods/extract-data";
+import { extractDataFromResume } from "@/lib/methods/extract-data";
+import type { ResumeData, Project, Experience, Education } from "@/lib/types";
 
 export function ResumeParser() {
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<ResumeData | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -15,7 +16,9 @@ export function ResumeParser() {
     if (file && file.type === "application/pdf") {
       setSelectedFile(file);
       const fileUrl = URL.createObjectURL(file);
-      const iframe = document.getElementById('resume-preview') as HTMLIFrameElement;
+      const iframe = document.getElementById(
+        "resume-preview",
+      ) as HTMLIFrameElement;
       if (iframe) {
         iframe.src = fileUrl;
       }
@@ -26,7 +29,7 @@ export function ResumeParser() {
     setLoading(true);
     try {
       const data = await extractDataFromResume(
-        selectedFile || "sourabhrathour.pdf"
+        selectedFile || "sourabhrathour.pdf",
       );
       setResult(data);
     } catch (error) {
@@ -39,7 +42,9 @@ export function ResumeParser() {
   const handleReset = () => {
     setResult(null);
     setSelectedFile(null);
-    const iframe = document.getElementById('resume-preview') as HTMLIFrameElement;
+    const iframe = document.getElementById(
+      "resume-preview",
+    ) as HTMLIFrameElement;
     if (iframe) {
       iframe.src = "/sourabhrathour.pdf";
     }
@@ -59,7 +64,9 @@ export function ResumeParser() {
                 <button
                   onClick={() => {
                     setSelectedFile(null);
-                    const iframe = document.getElementById('resume-preview') as HTMLIFrameElement;
+                    const iframe = document.getElementById(
+                      "resume-preview",
+                    ) as HTMLIFrameElement;
                     if (iframe) {
                       iframe.src = "/sourabhrathour.pdf";
                     }
@@ -84,13 +91,14 @@ export function ResumeParser() {
                       <span className="text-white">{selectedFile.name}</span>
                     ) : (
                       <>
-                        <span className="text-white">Choose a PDF file</span> or drag
-                        and drop
+                        <span className="text-white">Choose a PDF file</span> or
+                        drag and drop
                       </>
                     )}
                   </p>
                   <p className="mt-1 text-xs text-neutral-500">
-                    Currently using: {selectedFile ? "Custom Resume" : "Default Resume"}
+                    Currently using:{" "}
+                    {selectedFile ? "Custom Resume" : "Default Resume"}
                   </p>
                 </div>
               </div>
@@ -154,34 +162,49 @@ export function ResumeParser() {
             </div>
             <Tabs defaultValue="formatted" className="w-full">
               <TabsList className="w-full bg-neutral-900 border border-neutral-800">
-                <TabsTrigger 
-                  value="formatted" 
+                <TabsTrigger
+                  value="formatted"
                   className="w-full data-[state=active]:bg-neutral-800"
                 >
                   Formatted
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="json" 
+                <TabsTrigger
+                  value="json"
                   className="w-full data-[state=active]:bg-neutral-800"
                 >
                   JSON
                 </TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="formatted" className="mt-4">
                 <div className="space-y-4">
                   {/* Personal Details */}
                   <Section title="Personal Details">
-                    <InfoItem label="Name" value={result.personalDetails.name} />
-                    <InfoItem label="Email" value={result.personalDetails.email} />
-                    <InfoItem label="Phone" value={result.personalDetails.phone} />
-                    <InfoItem label="LinkedIn" value={result.personalDetails.linkedin} />
-                    <InfoItem label="GitHub" value={result.personalDetails.github} />
+                    <InfoItem
+                      label="Name"
+                      value={result.personalDetails.name}
+                    />
+                    <InfoItem
+                      label="Email"
+                      value={result.personalDetails.email}
+                    />
+                    <InfoItem
+                      label="Phone"
+                      value={result.personalDetails.phone}
+                    />
+                    <InfoItem
+                      label="LinkedIn"
+                      value={result.personalDetails.linkedin}
+                    />
+                    <InfoItem
+                      label="GitHub"
+                      value={result.personalDetails.github}
+                    />
                   </Section>
 
                   {/* Education */}
                   <Section title="Education">
-                    {result.education.map((edu: any, index: number) => (
+                    {result.education.map((edu: Education, index: number) => (
                       <div
                         key={index}
                         className="border-l-2 border-white/10 pl-4 mb-4 last:mb-0"
@@ -197,9 +220,11 @@ export function ResumeParser() {
                         </p>
                         {edu.highlights && edu.highlights.length > 0 && (
                           <ul className="mt-2 list-disc list-inside text-sm text-neutral-400">
-                            {edu.highlights.map((highlight: string, idx: number) => (
-                              <li key={idx}>{highlight}</li>
-                            ))}
+                            {edu.highlights.map(
+                              (highlight: string, idx: number) => (
+                                <li key={idx}>{highlight}</li>
+                              ),
+                            )}
                           </ul>
                         )}
                       </div>
@@ -228,7 +253,7 @@ export function ResumeParser() {
 
                   {/* Projects */}
                   <Section title="Projects">
-                    {result.projects.map((project: any, index: number) => (
+                    {result.projects.map((project: Project, index: number) => (
                       <div
                         key={index}
                         className="border-l-2 border-white/10 pl-4 mb-6 last:mb-0"
@@ -252,19 +277,23 @@ export function ResumeParser() {
                           {project.description}
                         </p>
                         <div className="mt-2 flex flex-wrap gap-2">
-                          {project.technologies.map((tech: string, idx: number) => (
-                            <span
-                              key={idx}
-                              className="px-2 py-1 text-xs bg-white/5 text-neutral-300 rounded-full border border-white/10"
-                            >
-                              {tech}
-                            </span>
-                          ))}
+                          {project.technologies.map(
+                            (tech: string, idx: number) => (
+                              <span
+                                key={idx}
+                                className="px-2 py-1 text-xs bg-white/5 text-neutral-300 rounded-full border border-white/10"
+                              >
+                                {tech}
+                              </span>
+                            ),
+                          )}
                         </div>
                         <ul className="mt-2 list-disc list-inside text-sm text-neutral-400">
-                          {project.highlights.map((highlight: string, idx: number) => (
-                            <li key={idx}>{highlight}</li>
-                          ))}
+                          {project.highlights.map(
+                            (highlight: string, idx: number) => (
+                              <li key={idx}>{highlight}</li>
+                            ),
+                          )}
                         </ul>
                       </div>
                     ))}
@@ -272,7 +301,7 @@ export function ResumeParser() {
 
                   {/* Experience */}
                   <Section title="Experience">
-                    {result.experience.map((exp: any, index: number) => (
+                    {result.experience.map((exp: Experience, index: number) => (
                       <div
                         key={index}
                         className="border-l-2 border-white/10 pl-4 mb-4 last:mb-0"
@@ -284,9 +313,11 @@ export function ResumeParser() {
                           {exp.duration} • {exp.location}
                         </p>
                         <ul className="mt-2 list-disc list-inside text-sm text-neutral-400">
-                          {exp.responsibilities.map((resp: string, idx: number) => (
-                            <li key={idx}>{resp}</li>
-                          ))}
+                          {exp.responsibilities.map(
+                            (resp: string, idx: number) => (
+                              <li key={idx}>{resp}</li>
+                            ),
+                          )}
                         </ul>
                       </div>
                     ))}
@@ -320,9 +351,7 @@ function Section({
 }) {
   return (
     <div className="bg-neutral-900/50 backdrop-blur-sm rounded-lg p-4 border border-neutral-800/50">
-      <h3 className="text-lg font-semibold mb-3 text-white">
-        {title}
-      </h3>
+      <h3 className="text-lg font-semibold mb-3 text-white">{title}</h3>
       {children}
     </div>
   );
@@ -342,9 +371,7 @@ function SkillsList({ title, items }: { title: string; items?: string[] }) {
   if (!items?.length) return null;
   return (
     <div className="mb-3 last:mb-0">
-      <h4 className="text-sm font-medium text-neutral-300 mb-2">
-        {title}
-      </h4>
+      <h4 className="text-sm font-medium text-neutral-300 mb-2">{title}</h4>
       <div className="flex flex-wrap gap-2">
         {items.map((item, index) => (
           <span
@@ -357,4 +384,4 @@ function SkillsList({ title, items }: { title: string; items?: string[] }) {
       </div>
     </div>
   );
-} 
+}

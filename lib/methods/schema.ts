@@ -3,7 +3,7 @@ import { z } from "zod";
 export const schema = z.object({
   personalDetails: z
     .object({
-      name: z.string().describe("Full name of the candidate"),
+      name: z.string().min(1).describe("Full name of the candidate"),
       phone: z.string().optional().describe("Phone number of the candidate"),
       email: z.string().email().describe("Email address of the candidate"),
       linkedin: z.string().url().optional().describe("LinkedIn profile URL"),
@@ -14,10 +14,10 @@ export const schema = z.object({
   education: z
     .array(
       z.object({
-        degree: z.string().describe("Name of the degree/certification"),
-        institution: z.string().describe("Name of the institution"),
-        duration: z.string().describe("Time period of education"),
-        location: z.string().describe("Location of the institution"),
+        degree: z.string().min(1).describe("Name of the degree/certification"),
+        institution: z.string().min(1).describe("Name of the institution"),
+        duration: z.string().min(1).describe("Time period of education"),
+        location: z.string().min(1).describe("Location of the institution"),
         gpa: z.string().optional().describe("GPA or academic performance"),
         highlights: z
           .array(z.string())
@@ -25,6 +25,7 @@ export const schema = z.object({
           .describe("Key academic achievements or relevant coursework"),
       })
     )
+    .min(1)
     .describe("Educational background"),
 
   technicalSkills: z
@@ -51,10 +52,11 @@ export const schema = z.object({
   projects: z
     .array(
       z.object({
-        name: z.string().describe("Name of the project"),
-        description: z.string().describe("Brief description of the project"),
+        name: z.string().min(1).describe("Name of the project"),
+        description: z.string().min(1).describe("Brief description of the project"),
         technologies: z
           .array(z.string())
+          .min(1)
           .describe("Technologies used in the project"),
         link: z
           .string()
@@ -63,24 +65,29 @@ export const schema = z.object({
           .describe("Project URL or repository link"),
         highlights: z
           .array(z.string())
+          .min(1)
           .describe("Key features or achievements of the project"),
       })
     )
+    .optional()
     .describe("Notable projects"),
 
   experience: z
     .array(
       z.object({
-        company: z.string().describe("Name of the company"),
-        position: z.string().describe("Job title or role"),
-        duration: z.string().describe("Time period of employment"),
+        company: z.string().min(1).describe("Name of the company"),
+        position: z.string().min(1).describe("Job title or role"),
+        duration: z.string().min(1).describe("Time period of employment"),
         location: z
           .string()
+          .min(1)
           .describe("Work location (or 'Remote' if applicable)"),
         responsibilities: z
           .array(z.string())
+          .min(1)
           .describe("Key tasks and responsibilities handled in the role"),
-      }),
+      })
     )
+    .optional()
     .describe("Work experience details"),
-});
+}).strict();

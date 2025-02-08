@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     title: "Resume Parser - Extract Data from PDF Resumes",
     description:
       "Transform your PDF resume into structured data using AI. Parse resumes efficiently with our modern resume parsing tool.",
-    url: "https://letraz-resume.vercel.app",
+    url: "https://resume-parser-letraz.vercel.app",
     siteName: "Resume Parser",
     images: [
       {

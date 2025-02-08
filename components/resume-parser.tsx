@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { extractDataFromResume } from "@/lib/methods/extract-data";
 import type { ResumeData, Project, Experience, Education } from "@/lib/types";
+import "@/styles/scrollbar.css";
 
 export function ResumeParser() {
   const [result, setResult] = useState<ResumeData | null>(null);

@@ -10,6 +10,7 @@ import "@/styles/scrollbar.css";
 export function ResumeParser() {
   const [result, setResult] = useState<ResumeData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,14 +29,15 @@ export function ResumeParser() {
 
   const handleGenerate = async () => {
     setLoading(true);
+    setError(null);
     try {
       const data = await extractDataFromResume(
-        selectedFile || "sourabhrathour.pdf",
+        selectedFile || "sourabhrathour.pdf"
       );
       setResult(data);
     } catch (error) {
       console.error("Error extracting data:", error);
-      alert("Failed to parse resume. Please try again or contact support if the issue persists.");
+      setError("Failed to process resume. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -55,6 +57,12 @@ export function ResumeParser() {
   return (
     <>
       <div className="space-y-6">
+        {error && (
+          <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-400">
+            {error}
+          </div>
+        )}
+        
         {/* Only show file upload when not loading and no results */}
         {!loading && !result && (
           <div className="space-y-2">

@@ -1,18 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  webpack: (config) => {
-    config.module.rules.push({
-      test: /\.pdf$/,
-      type: 'asset/resource'
-    });
-    return config;
-  },
-  // Add this if you're using the edge runtime
-  experimental: {
-    serverActions: {
-      bodySizeLimit: '10mb',
-    },
+  env: {
+    ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
   },
 };
 
